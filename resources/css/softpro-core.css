@@ -1,0 +1,25 @@
+/* Softpro Core Central Stylesheet */
+
+/* Import Bootstrap and AdminLTE */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'admin-lte/dist/css/adminlte.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* Custom Package Overrides */
+:root {
+    --softpro-primary: #007bff;
+    --softpro-secondary: #6c757d;
+}
+
+.softpro-sidebar {
+    min-height: 100vh;
+}
+
+/* Fix for CropperJS if needed */
+.cropper-container {
+    direction: ltr;
+    font-size: 0;
+    line-height: 0;
+    position: relative;
+    user-select: none;
+}

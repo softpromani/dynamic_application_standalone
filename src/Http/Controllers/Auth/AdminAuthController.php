@@ -28,7 +28,7 @@ class AdminAuthController extends Controller
                 return redirect()->intended(route('admin.dashboard'));
             }
             
-            return redirect()->intended(route('superadmin.dashboard'));
+            return redirect()->intended(route(config('softpro-core.home_route', 'admin.dashboard')));
         }
 
         return back()->withErrors([
@@ -46,6 +46,6 @@ class AdminAuthController extends Controller
             return redirect()->route('login');
         }
 
-        return redirect()->route('superadmin.login');
+        return redirect()->route(config('softpro-core.login_route', 'admin.login'));
     }
 }

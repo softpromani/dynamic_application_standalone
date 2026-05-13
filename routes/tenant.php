@@ -22,31 +22,33 @@ use Softpro\Core\Http\Controllers\CustomEntityController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    // This could be moved to a LandingController in the package
-    $tenant = function_exists('tenant') ? tenant() : null;
-    if ($tenant && !empty($tenant->landing_page_html)) {
-        return Inertia\Inertia::render('CustomLanding', [
-            'htmlContent' => $tenant->landing_page_html
+if (config('softpro-core.enable_root_route', true)) {
+    Route::get('/', function () {
+        // This could be moved to a LandingController in the package
+        $tenant = function_exists('tenant') ? tenant() : null;
+        if ($tenant && !empty($tenant->landing_page_html)) {
+            return Inertia\Inertia::render('CustomLanding', [
+                'htmlContent' => $tenant->landing_page_html
+            ]);
+        }
+
+        $programs = \Softpro\Core\Models\Program::with(['openings.subject'])
+            ->where('is_active', true)
+            ->where('application_end_date', '>=', now())
+            ->latest()
+            ->get();
+
+        $news = \Softpro\Core\Models\News::where('is_active', true)
+            ->orderBy('sort_order')
+            ->latest()
+            ->get();
+
+        return Inertia\Inertia::render('Welcome', [
+            'programs' => $programs,
+            'news' => $news,
         ]);
-    }
-
-    $programs = \Softpro\Core\Models\Program::with(['openings.subject'])
-        ->where('is_active', true)
-        ->where('application_end_date', '>=', now())
-        ->latest()
-        ->get();
-
-    $news = \Softpro\Core\Models\News::where('is_active', true)
-        ->orderBy('sort_order')
-        ->latest()
-        ->get();
-
-    return Inertia\Inertia::render('Welcome', [
-        'programs' => $programs,
-        'news' => $news,
-    ]);
-});
+    })->name('softpro.welcome');
+}
 
 // Admin Auth
 Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('login');

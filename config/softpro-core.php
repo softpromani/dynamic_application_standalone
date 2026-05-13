@@ -33,4 +33,37 @@ return [
     |
     */
     'layout' => 'app',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auth Configuration
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, the package will automatically register the 'applicant'
+    | guard and provider in the host application.
+    |
+    */
+    'register_guards' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Consistent Routing
+    |--------------------------------------------------------------------------
+    |
+    | Default routes for package redirects.
+    |
+    */
+    'home_route' => 'admin.dashboard',
+    'login_route' => 'admin.login',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Root Route Control
+    |--------------------------------------------------------------------------
+    |
+    | When set to false, the package will not register the '/' route,
+    | allowing the host application to define its own home page.
+    |
+    */
+    'enable_root_route' => true,
 ];

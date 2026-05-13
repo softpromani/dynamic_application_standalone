@@ -46,6 +46,8 @@ class CoreServiceProvider extends ServiceProvider
         
         $this->registerRoutes();
         $this->registerCommands();
+        $this->registerGuards();
+        $this->registerMiddleware();
     }
 
     /**
@@ -58,6 +60,37 @@ class CoreServiceProvider extends ServiceProvider
                 ->prefix(config('softpro-core.route_prefix'))
                 ->group(__DIR__ . '/../../routes/web.php');
         }
+    }
+
+    /**
+     * Register the applicant guard dynamically.
+     */
+    protected function registerGuards(): void
+    {
+        if (!config('softpro-core.register_guards')) {
+            return;
+        }
+
+        config([
+            'auth.guards.applicant' => array_merge([
+                'driver' => 'session',
+                'provider' => 'applicants',
+            ], config('auth.guards.applicant', [])),
+            
+            'auth.providers.applicants' => array_merge([
+                'driver' => 'eloquent',
+                'model' => \Softpro\Core\Models\Applicant::class,
+            ], config('auth.providers.applicants', [])),
+        ]);
+    }
+
+    /**
+     * Register package middleware.
+     */
+    protected function registerMiddleware(): void
+    {
+        $router = $this->app['router'];
+        $router->pushMiddlewareToGroup('web', \Softpro\Core\Http\Middleware\ShareInertiaData::class);
     }
 
     /**

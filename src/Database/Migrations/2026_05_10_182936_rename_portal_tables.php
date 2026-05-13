@@ -12,27 +12,51 @@ return new class extends Migration
     public function up(): void
     {
         // Rename Tables
-        Schema::rename('recruitment_jobs', 'programs');
-        Schema::rename('candidates', 'applicants');
-        Schema::rename('vacancies', 'openings');
-        Schema::rename('job_application_types', 'program_application_types');
+        if (Schema::hasTable('recruitment_jobs') && !Schema::hasTable('programs')) {
+            Schema::rename('recruitment_jobs', 'programs');
+        }
+        if (Schema::hasTable('candidates') && !Schema::hasTable('applicants')) {
+            Schema::rename('candidates', 'applicants');
+        }
+        if (Schema::hasTable('vacancies') && !Schema::hasTable('openings')) {
+            Schema::rename('vacancies', 'openings');
+        }
+        if (Schema::hasTable('job_application_types') && !Schema::hasTable('program_application_types')) {
+            Schema::rename('job_application_types', 'program_application_types');
+        }
 
         // Rename Columns in openings
-        Schema::table('openings', function (Blueprint $table) {
-            $table->renameColumn('recruitment_job_id', 'program_id');
-        });
+        if (Schema::hasTable('openings')) {
+            Schema::table('openings', function (Blueprint $table) {
+                if (Schema::hasColumn('openings', 'recruitment_job_id')) {
+                    $table->renameColumn('recruitment_job_id', 'program_id');
+                }
+            });
+        }
 
         // Rename Columns in applications
-        Schema::table('applications', function (Blueprint $table) {
-            $table->renameColumn('candidate_id', 'applicant_id');
-            $table->renameColumn('vacancy_id', 'opening_id');
-            $table->renameColumn('job_application_type_id', 'program_application_type_id');
-        });
+        if (Schema::hasTable('applications')) {
+            Schema::table('applications', function (Blueprint $table) {
+                if (Schema::hasColumn('applications', 'candidate_id')) {
+                    $table->renameColumn('candidate_id', 'applicant_id');
+                }
+                if (Schema::hasColumn('applications', 'vacancy_id')) {
+                    $table->renameColumn('vacancy_id', 'opening_id');
+                }
+                if (Schema::hasColumn('applications', 'job_application_type_id')) {
+                    $table->renameColumn('job_application_type_id', 'program_application_type_id');
+                }
+            });
+        }
 
         // Rename Columns in program_application_types
-        Schema::table('program_application_types', function (Blueprint $table) {
-            $table->renameColumn('recruitment_job_id', 'program_id');
-        });
+        if (Schema::hasTable('program_application_types')) {
+            Schema::table('program_application_types', function (Blueprint $table) {
+                if (Schema::hasColumn('program_application_types', 'recruitment_job_id')) {
+                    $table->renameColumn('recruitment_job_id', 'program_id');
+                }
+            });
+        }
     }
 
     /**
