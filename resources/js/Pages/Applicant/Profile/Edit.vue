@@ -1,9 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import TextInput from '@/Components/TextInput.vue';
-import ImageCropper from '@/Components/UI/ImageCropper.vue';
+import AdminLayout from '@softpro-core/Layouts/AdminLayout.vue';
+import TextInput from '@softpro-core/Components/TextInput.vue';
+import ImageCropper from '@softpro-core/Components/UI/ImageCropper.vue';
 import axios from 'axios';
 
 const props = defineProps({

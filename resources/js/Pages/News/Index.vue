@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminLayout from '@softpro-core/Layouts/AdminLayout.vue';
 import { Modal } from 'bootstrap';
 
 const props = defineProps({

@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminLayout from '@softpro-core/Layouts/AdminLayout.vue';
 
 const props = defineProps({
     template: Object,

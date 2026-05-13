@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import { usePage } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminLayout from '@softpro-core/Layouts/AdminLayout.vue';
 
 defineProps({
     applications: Array

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminLayout from '@softpro-core/Layouts/AdminLayout.vue';
 
 const props = defineProps({
     programs: Array,

@@ -12,7 +12,9 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->mergeConfigFrom(
+            __DIR__ . '/../../config/softpro-core.php', 'softpro-core'
+        );
     }
 
     /**
@@ -20,10 +22,30 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Config
+        $this->publishes([
+            __DIR__ . '/../../config/softpro-core.php' => config_path('softpro-core.php'),
+        ], 'softpro-core-config');
+
+        // Migrations
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+        $this->publishes([
+            __DIR__ . '/../Database/Migrations' => database_path('migrations'),
+        ], 'softpro-core-migrations');
+
+        // Views
         $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'softpro-core');
+        $this->publishes([
+            __DIR__ . '/../../resources/views' => resource_path('views/vendor/softpro-core'),
+        ], 'softpro-core-views');
+
+        // Assets
+        $this->publishes([
+            __DIR__ . '/../../resources/js' => resource_path('js/vendor/softpro-core'),
+        ], 'softpro-core-assets');
         
         $this->registerRoutes();
+        $this->registerCommands();
     }
 
     /**
@@ -31,11 +53,23 @@ class CoreServiceProvider extends ServiceProvider
      */
     protected function registerRoutes(): void
     {
-        // If we are in a Tenancy environment, routes are handled by the main app's routes/tenant.php
-        // If we are in Standalone mode, we register them here.
-        if (!class_exists(\Stancl\Tenancy\Tenancy::class) || !app()->bound(\Stancl\Tenancy\Tenancy::class)) {
-            Route::middleware('web')
+        if (config('softpro-core.standalone')) {
+            Route::middleware(['web', \Softpro\Core\Http\Middleware\SetStandaloneRootView::class])
+                ->prefix(config('softpro-core.route_prefix'))
                 ->group(__DIR__ . '/../../routes/web.php');
         }
     }
+
+    /**
+     * Register console commands.
+     */
+    protected function registerCommands(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \Softpro\Core\Console\Commands\InstallCommand::class,
+            ]);
+        }
+    }
 }
+
