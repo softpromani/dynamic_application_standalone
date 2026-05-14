@@ -19,6 +19,13 @@ const meta = useForm({
     description:        '',
     is_profile:         false,
     fields:             [],
+    preview_config: {
+        show_photo: true,
+        show_signature: true,
+        show_thumb_impression: true,
+        show_declaration: true,
+        declaration_text: "I hereby declare that all the information given by me in this application are true and correct to the best of my knowledge and belief. In the event of any information being found false or incorrect or ineligibility being detected before or after the interview/selection, my candidature/appointment is liable to be cancelled.",
+    }
 });
 
 /* ─── Steps (of the FORM being built, not the wizard) ─── */
@@ -288,7 +295,12 @@ const needsOptions = (type) => ['select', 'radio'].includes(type);
                         <span class="wp-label">Build Fields</span>
                     </div>
                     <div class="wp-line" :class="{ filled: wizardStep > 2 }"></div>
-                    <div class="wp-step" :class="{ active: wizardStep >= 3 }">
+                    <div class="wp-step" :class="{ active: wizardStep >= 3, done: wizardStep > 3 }">
+                        <div class="wp-circle"><i class="bi bi-printer-fill"></i></div>
+                        <span class="wp-label">Print Config</span>
+                    </div>
+                    <div class="wp-line" :class="{ filled: wizardStep > 3 }"></div>
+                    <div class="wp-step" :class="{ active: wizardStep >= 4 }">
                         <div class="wp-circle"><i class="bi bi-check2-all"></i></div>
                         <span class="wp-label">Review & Save</span>
                     </div>
@@ -664,34 +676,69 @@ const needsOptions = (type) => ['select', 'radio'].includes(type);
 
             <!-- Navigation for step 2 -->
             <div v-if="wizardStep === 2" class="d-flex justify-content-between mt-3">
-                <button @click="wizardStep = 1" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-2"></i>Back
-                </button>
+                <button @click="wizardStep = 1" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Back</button>
                 <div>
                     <span v-if="errors.fields" class="text-danger small me-3">{{ errors.fields }}</span>
-                    <button @click="goToStep(3)" class="btn btn-primary-red">
-                        Review Template <i class="bi bi-arrow-right ms-2"></i>
-                    </button>
+                    <button @click="goToStep(3)" class="btn btn-primary-red">Print Settings <i class="bi bi-arrow-right ms-2"></i></button>
                 </div>
             </div>
 
-            <!-- ═══════════════════════════════════════
-                 STEP 3 – REVIEW & SAVE
-            ═══════════════════════════════════════ -->
+            <!-- STEP 3: Print Config -->
             <div v-if="wizardStep === 3" class="builder-card">
-                <div class="builder-card-header">
-                    <i class="bi bi-check2-all me-2"></i>Review & Save Template
-                </div>
+                <div class="builder-card-header"><i class="bi bi-printer-fill me-2"></i>Default Print & Preview Settings</div>
                 <div class="builder-card-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-3 border-bottom pb-2">Visibility Toggles</h6>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" v-model="meta.preview_config.show_photo" id="tShowPhoto">
+                                <label class="form-check-label fw-bold" for="tShowPhoto">Show Photo Box</label>
+                                <div class="form-text small">Display the applicant's profile photo.</div>
+                            </div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" v-model="meta.preview_config.show_signature" id="tShowSig">
+                                <label class="form-check-label fw-bold" for="tShowSig">Show Signature Box</label>
+                                <div class="form-text small">Display the applicant's uploaded signature.</div>
+                            </div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" v-model="meta.preview_config.show_thumb_impression" id="tShowThumb">
+                                <label class="form-check-label fw-bold" for="tShowThumb">Show Thumb Impression Box</label>
+                                <div class="form-text small">Display a box for manual thumb impression.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-3 border-bottom pb-2">Declaration Section</h6>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" v-model="meta.preview_config.show_declaration" id="tShowDecl">
+                                <label class="form-check-label fw-bold" for="tShowDecl">Enable Declaration</label>
+                                <div class="form-text small">Show the declaration text at the bottom.</div>
+                            </div>
+                            <div v-if="meta.preview_config.show_declaration" class="mt-3">
+                                <label class="form-label fw-bold small">Default Declaration Text</label>
+                                <textarea v-model="meta.preview_config.declaration_text" class="form-control" rows="5"></textarea>
+                                <div class="form-text small text-muted">This will be the default for all programs using this template unless overridden.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="builder-card-footer d-flex justify-content-between">
+                    <button @click="wizardStep = 2" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Back to Fields</button>
+                    <button @click="wizardStep = 4" class="btn btn-primary-red">Review Template <i class="bi bi-arrow-right ms-2"></i></button>
+                </div>
+            </div>
 
-                    <!-- Meta summary -->
+            <!-- STEP 4: Review -->
+            <div v-if="wizardStep === 4" class="builder-card">
+                <div class="builder-card-header"><i class="bi bi-check2-all me-2"></i>Review & Save Template</div>
+                <div class="builder-card-body">
                     <div class="review-section mb-4">
                         <h6 class="review-section-title">Template Info</h6>
                         <div class="review-grid">
-                            <div class="review-item">
-                                <span class="review-key">Name</span>
-                                <span class="review-val">{{ meta.name }}</span>
-                            </div>
+                            <div class="review-item"><span class="review-key">Name</span><span class="review-val">{{ meta.name }}</span></div>
+                            <div class="review-item"><span class="review-key">Print: Photo</span><span class="review-val">{{ meta.preview_config.show_photo ? 'Yes' : 'No' }}</span></div>
+                            <div class="review-item"><span class="review-key">Print: Signature</span><span class="review-val">{{ meta.preview_config.show_signature ? 'Yes' : 'No' }}</span></div>
+                        </div>
+                    </div>
 
                             <div class="review-item" v-if="meta.description">
                                 <span class="review-key">Description</span>
@@ -785,8 +832,8 @@ const needsOptions = (type) => ['select', 'radio'].includes(type);
                 </div>
 
                 <div class="builder-card-footer d-flex justify-content-between">
-                    <button @click="wizardStep = 2" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-2"></i>Back to Builder
+                    <button @click="wizardStep = 3" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Settings
                     </button>
                     <button @click="submit" class="btn btn-primary-red" :disabled="meta.processing">
                         <i class="bi bi-check-circle me-2"></i>

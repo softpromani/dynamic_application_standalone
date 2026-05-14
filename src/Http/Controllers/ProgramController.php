@@ -47,6 +47,7 @@ class ProgramController extends Controller
             'footer_notes'           => 'nullable|string',
             'is_payable'             => 'required|boolean',
             'custom_entity_id'       => 'nullable|exists:custom_entities,id',
+            'preview_config'         => 'nullable|array',
         ]);
 
         $program = Program::create($request->except(['openings', 'application_types']));
@@ -105,6 +106,7 @@ class ProgramController extends Controller
             'footer_notes'           => 'nullable|string',
             'is_payable'             => 'required|boolean',
             'custom_entity_id'       => 'nullable|exists:custom_entities,id',
+            'preview_config'         => 'nullable|array',
         ]);
 
         $program->update($request->except(['openings', 'application_types']));

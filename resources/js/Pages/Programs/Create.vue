@@ -26,6 +26,19 @@ const form = useForm({
     footer_notes: '',
     is_payable: true,
     custom_entity_id: '', // The entity used for vacancies (e.g. Subject, Department)
+    preview_config: {
+        show_photo: true,
+        show_signature: true,
+        show_thumb_impression: true,
+        show_declaration: true,
+        declaration_text: "I hereby declare that all the information given by me in this application are true and correct to the best of my knowledge and belief. In the event of any information being found false or incorrect or ineligibility being detected before or after the interview/selection, my candidature/appointment is liable to be cancelled.",
+        show_application_no: true,
+        show_subject: true,
+        show_program: true,
+        show_status: true,
+        show_fees: true,
+        show_category: true,
+    }
 });
 
 // --- Application Type management ---
@@ -216,6 +229,64 @@ const submit = () => {
                                 <textarea v-model="form.footer_notes" class="form-control"
                                     rows="4" placeholder="Terms, conditions, or mandatory declarations..."></textarea>
                                 <div class="form-text x-small text-muted">Visible to applicants at the bottom of the form.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="card-title mb-0 fw-bold text-dark"><i class="bi bi-printer me-2"></i>Print & Preview Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" v-model="form.preview_config.show_photo" id="showPhoto">
+                                        <label class="form-check-label fw-semibold small" for="showPhoto">Show Photo Box</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" v-model="form.preview_config.show_signature" id="showSig">
+                                        <label class="form-check-label fw-semibold small" for="showSig">Show Signature Box</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" v-model="form.preview_config.show_thumb_impression" id="showThumb">
+                                        <label class="form-check-label fw-semibold small" for="showThumb">Show Thumb Impression Box</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" v-model="form.preview_config.show_declaration" id="showDecl">
+                                        <label class="form-check-label fw-semibold small" for="showDecl">Show Declaration Section</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" v-model="form.preview_config.show_application_no" id="showAppNo">
+                                        <label class="form-check-label fw-semibold small" for="showAppNo">Show Application No</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" v-model="form.preview_config.show_subject" id="showSub">
+                                        <label class="form-check-label fw-semibold small" for="showSub">Show Subject</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" v-model="form.preview_config.show_program" id="showProg">
+                                        <label class="form-check-label fw-semibold small" for="showProg">Show Program</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" v-model="form.preview_config.show_status" id="showStatus">
+                                        <label class="form-check-label fw-semibold small" for="showStatus">Show Status</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" v-model="form.preview_config.show_fees" id="showFees">
+                                        <label class="form-check-label fw-semibold small" for="showFees">Show Fees</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" v-model="form.preview_config.show_category" id="showCat">
+                                        <label class="form-check-label fw-semibold small" for="showCat">Show Category</label>
+                                    </div>
+                                </div>
+                                <div v-if="form.preview_config.show_declaration" class="col-12 mt-2">
+                                    <label class="form-label fw-semibold small">Custom Declaration Text</label>
+                                    <textarea v-model="form.preview_config.declaration_text" class="form-control form-control-sm" rows="3"></textarea>
+                                    <div class="form-text x-small">This text will appear in the declaration section of the print/preview page.</div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -24,7 +24,8 @@ class Program extends Model
         'form_template_id',
         'footer_notes',
         'is_payable',
-        'custom_entity_id'
+        'custom_entity_id',
+        'preview_config'
     ];
 
     protected $casts = [
@@ -33,6 +34,7 @@ class Program extends Model
         'last_payment_date' => 'date',
         'is_active' => 'boolean',
         'is_payable' => 'boolean',
+        'preview_config' => 'array',
     ];
 
     public function applicationTypes(): HasMany

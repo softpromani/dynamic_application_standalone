@@ -11,6 +11,10 @@ const props = defineProps({
     subjects: {
         type: Array,
         default: () => []
+    },
+    previewConfig: {
+        type: Object,
+        default: () => ({})
     }
 });
 
@@ -109,10 +113,10 @@ const getTableConfig = (field) => {
                         <h2 class="fw-bold mb-0 text-uppercase" style="font-family: serif; letter-spacing: 1px;">{{ $page.props.tenant?.name || 'Portal Name' }}</h2>
                         <h5 class="mb-0 text-muted">{{ $page.props.tenant?.header_address || 'Kameshwaranagar, Darbhanga, Bihar 846004' }}</h5>
                         <div class="mt-2 fw-bold text-dark border-top border-bottom py-1 d-inline-block px-4">
-                            {{ $page.props.tenant?.header_subtext_prefix || 'APPLICATION FORM FOR' }} {{ application?.opening?.program?.title || 'GUEST/PART-TIME TEACHER' }}
+                            {{ $page.props.tenant?.header_subtext_prefix || 'APPLICATION FORM FOR' }} {{ application?.opening?.program?.title || application?.opening?.job?.title || 'PROGRAM' }}
                         </div>
                     </div>
-                    <div class="photo-box border d-flex align-items-center justify-content-center text-muted" style="width: 120px; height: 150px; font-size: 10px;">
+                    <div v-if="(previewConfig?.show_photo ?? true)" class="photo-box border d-flex align-items-center justify-content-center text-muted" style="width: 120px; height: 150px; font-size: 10px;">
                         <img v-if="applicant?.profile_photo_path" :src="`/storage/${applicant.profile_photo_path}`" class="img-fluid h-100 w-100" style="object-fit: cover;" />
                         <span v-else>PASTE RECENT<br>PASSPORT SIZE<br>PHOTOGRAPH</span>
                     </div>
@@ -122,7 +126,7 @@ const getTableConfig = (field) => {
             <!-- Application Info -->
             <div class="row mb-4">
                 <div class="col-6">
-                    <div class="info-row">
+                    <div v-if="(previewConfig?.show_application_no ?? true)" class="info-row">
                         <span class="label">Application No:</span>
                         <span class="value fw-bold text-primary">{{ application?.application_no || '________________' }}</span>
                     </div>
@@ -130,23 +134,23 @@ const getTableConfig = (field) => {
                         <span class="label">Date:</span>
                         <span class="value">{{ application?.submitted_at ? new Date(application.submitted_at).toLocaleDateString() : '________________' }}</span>
                     </div>
-                    <div class="info-row">
+                    <div v-if="(previewConfig?.show_program ?? true)" class="info-row">
                         <span class="label">Program Code:</span>
                         <span class="value fw-bold">{{ application?.opening?.program?.job_code || '________________' }}</span>
                     </div>
                 </div>
-                <div class="col-6 text-end">
-                    <div class="info-row">
+                <div class="col-6">
+                    <div v-if="(previewConfig?.show_subject ?? true)" class="info-row">
                         <span class="label">Subject:</span>
-                        <span class="value fw-bold">{{ application?.opening?.subject?.name || 'General Opening' }}</span>
+                        <span class="value fw-bold">{{ application?.opening?.subject?.name || '________________' }}</span>
                     </div>
-                    <div class="info-row">
-                        <span class="label">Program:</span>
-                        <span class="value">{{ application?.opening?.program?.title || '________________' }}</span>
+                    <div v-if="(previewConfig?.show_fees ?? true)" class="info-row">
+                        <span class="label">Fees Paid:</span>
+                        <span class="value fw-bold text-success">₹{{ application?.total_amount || '0' }}</span>
                     </div>
-                    <div v-if="application?.status" class="info-row">
+                    <div v-if="(previewConfig?.show_status ?? true)" class="info-row">
                         <span class="label">Status:</span>
-                        <span class="value text-uppercase small badge" :class="application.status === 'paid' ? 'bg-success' : 'bg-secondary'">{{ application.status }}</span>
+                        <span class="value badge bg-light text-dark border">{{ application?.status?.toUpperCase() || 'DRAFT' }}</span>
                     </div>
                 </div>
             </div>
@@ -211,15 +215,15 @@ const getTableConfig = (field) => {
             </div>
 
             <!-- Signature Section -->
-            <div class="mt-5 pt-4">
+            <div v-if="(previewConfig?.show_signature ?? true) || (previewConfig?.show_thumb_impression ?? true)" class="mt-5 pt-4">
                 <div class="row align-items-end">
-                    <div class="col-6">
+                    <div v-if="(previewConfig?.show_thumb_impression ?? true)" class="col-6">
                         <div class="border-top pt-2 text-center" style="width: 200px;">
                             <small class="text-muted d-block">Applicant's Left Thumb Impression</small>
                             <div class="mt-4 border" style="height: 60px;"></div>
                         </div>
                     </div>
-                    <div class="col-6 d-flex flex-column align-items-center">
+                    <div v-if="(previewConfig?.show_signature ?? true)" class="col-6 d-flex flex-column align-items-center">
                         <div class="mb-2 text-center">
                             <img v-if="applicant?.signature_path" :src="`/storage/${applicant.signature_path}`" style="max-height: 60px; max-width: 180px;" />
                             <div v-else class="mt-4" style="height: 40px;"></div>
@@ -238,10 +242,10 @@ const getTableConfig = (field) => {
                 </div>
             </div>
 
-            <div class="footer-declaration mt-5 pt-4 border-top">
+            <div v-if="(previewConfig?.show_declaration ?? true)" class="footer-declaration mt-5 pt-4 border-top">
                 <h6 class="fw-bold small text-uppercase mb-2">Declaration:</h6>
                 <p class="text-muted" style="font-size: 11px; text-align: justify; line-height: 1.5;">
-                    I hereby declare that all the information given by me in this application are true and correct to the best of my knowledge and belief. In the event of any information being found false or incorrect or ineligibility being detected before or after the interview/selection, my candidature/appointment is liable to be cancelled.
+                    {{ previewConfig?.declaration_text || "I hereby declare that all the information given by me in this application are true and correct to the best of my knowledge and belief. In the event of any information being found false or incorrect or ineligibility being detected before or after the interview/selection, my candidature/appointment is liable to be cancelled." }}
                 </p>
                 <div class="mt-4 d-flex justify-content-between">
                     <span class="small text-muted">Date: ........................</span>

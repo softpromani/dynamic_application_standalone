@@ -80,6 +80,7 @@ Route::prefix('applicant')->name('applicant.')->group(function () {
         Route::get('/apply/{opening}/preview', [ApplicantApplicationController::class, 'preview'])->name('apply.preview');
         Route::post('/apply/{opening}/step', [ApplicantApplicationController::class, 'saveStep'])->name('apply.saveStep');
         Route::post('/apply/{opening}', [ApplicantApplicationController::class, 'submitForm'])->name('apply.submit');
+        Route::get('/applications/{application}/print', [ApplicantApplicationController::class, 'print'])->name('application.print');
     });
 });
 

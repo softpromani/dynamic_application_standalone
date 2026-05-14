@@ -50,6 +50,7 @@ class FormTemplateController extends Controller
             'fields.*.field_type'=> 'required|string',
             'fields.*.system_alias'=> 'nullable|string|max:100',
             'fields.*.custom_entity_id'=> 'nullable|exists:custom_entities,id',
+            'preview_config'     => 'nullable|array',
         ]);
 
         if ($request->is_profile) {
@@ -61,6 +62,7 @@ class FormTemplateController extends Controller
             'description'        => $request->description,
             'is_active'          => true,
             'is_profile'         => $request->is_profile ?? false,
+            'preview_config'     => $request->preview_config,
         ]);
 
         foreach ($request->fields as $index => $field) {
@@ -125,6 +127,7 @@ class FormTemplateController extends Controller
             'fields.*.field_type'=> 'required|string',
             'fields.*.system_alias'=> 'nullable|string|max:100',
             'fields.*.custom_entity_id'=> 'nullable|exists:custom_entities,id',
+            'preview_config'     => 'nullable|array',
         ]);
 
         if ($request->is_profile) {
@@ -135,6 +138,7 @@ class FormTemplateController extends Controller
             'name'               => $request->name,
             'description'        => $request->description,
             'is_profile'         => $request->is_profile ?? false,
+            'preview_config'     => $request->preview_config,
         ]);
 
         $sentFieldIds = collect($request->fields)->pluck('id')->filter()->toArray();
@@ -187,6 +191,7 @@ class FormTemplateController extends Controller
         return Inertia::render('Templates/PrintPreview', [
             'template' => $template,
             'subjects' => $subjects,
+            'previewConfig' => $template->preview_config ?: []
         ]);
     }
 

@@ -12,11 +12,13 @@ class FormTemplate extends Model
         'description',
         'is_active',
         'is_profile',
+        'preview_config',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'is_profile' => 'boolean',
+        'preview_config' => 'array',
     ];
 
     public function jobs(): HasMany

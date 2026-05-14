@@ -9,6 +9,7 @@ const props = defineProps({
     applicant: Object,
     responses: Object,
     customEntityData: Object,
+    previewConfig: Object,
 });
 
 const fieldsByStep = computed(() => {
@@ -102,7 +103,7 @@ const submitFinal = () => {
                                             APPLICATION FORM PREVIEW
                                         </div>
                                     </div>
-                                    <div class="photo-box border rounded bg-light d-flex align-items-center justify-content-center" style="width: 100px; height: 120px; overflow: hidden;">
+                                    <div v-if="(previewConfig?.show_photo ?? true)" class="photo-box border rounded bg-light d-flex align-items-center justify-content-center" style="width: 100px; height: 120px; overflow: hidden;">
                                         <img v-if="applicant?.profile_photo_path" :src="`/storage/${applicant.profile_photo_path}`" class="img-fluid h-100 w-100" style="object-fit: cover;" />
                                         <span v-else class="text-muted small text-center px-2">PHOTO</span>
                                     </div>
@@ -113,16 +114,16 @@ const submitFinal = () => {
                             <div class="row mb-5 g-4">
                                 <div class="col-md-6">
                                     <div class="p-3 bg-light rounded-3 h-100">
-                                        <div class="mb-2"><span class="text-muted small fw-bold text-uppercase">Application No:</span> <span class="ms-2 fw-bold text-dark">{{ application.application_no }}</span></div>
-                                        <div class="mb-2"><span class="text-muted small fw-bold text-uppercase">Subject:</span> <span class="ms-2 fw-bold text-dark">{{ application.opening.subject?.name || 'General' }}</span></div>
-                                        <div class="mb-0"><span class="text-muted small fw-bold text-uppercase">Program:</span> <span class="ms-2 fw-bold text-dark">{{ application.opening.job?.title || application.opening.program?.title }}</span></div>
+                                        <div v-if="(previewConfig?.show_application_no ?? true)" class="mb-2"><span class="text-muted small fw-bold text-uppercase">Application No:</span> <span class="ms-2 fw-bold text-dark">{{ application.application_no }}</span></div>
+                                        <div v-if="(previewConfig?.show_subject ?? true)" class="mb-2"><span class="text-muted small fw-bold text-uppercase">Subject:</span> <span class="ms-2 fw-bold text-dark">{{ application.opening.subject?.name || 'General' }}</span></div>
+                                        <div v-if="(previewConfig?.show_program ?? true)" class="mb-0"><span class="text-muted small fw-bold text-uppercase">Program:</span> <span class="ms-2 fw-bold text-dark">{{ application.opening.job?.title || application.opening.program?.title }}</span></div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="p-3 bg-light rounded-3 h-100 text-md-end">
-                                        <div class="mb-2"><span class="text-muted small fw-bold text-uppercase">Draft Status:</span> <span class="ms-2 badge bg-warning text-dark">DRAFT</span></div>
-                                        <div class="mb-2"><span class="text-muted small fw-bold text-uppercase">Fees:</span> <span class="ms-2 fw-bold text-success">₹{{ application.total_amount }}</span></div>
-                                        <div class="mb-0"><span class="text-muted small fw-bold text-uppercase">Category:</span> <span class="ms-2 fw-bold text-dark">{{ application.application_type?.name }}</span></div>
+                                        <div v-if="(previewConfig?.show_status ?? true)" class="mb-2"><span class="text-muted small fw-bold text-uppercase">Draft Status:</span> <span class="ms-2 badge bg-warning text-dark">DRAFT</span></div>
+                                        <div v-if="(previewConfig?.show_fees ?? true)" class="mb-2"><span class="text-muted small fw-bold text-uppercase">Fees:</span> <span class="ms-2 fw-bold text-success">₹{{ application.total_amount }}</span></div>
+                                        <div v-if="(previewConfig?.show_category ?? true)" class="mb-0"><span class="text-muted small fw-bold text-uppercase">Category:</span> <span class="ms-2 fw-bold text-dark">{{ application.application_type?.name }}</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -205,15 +206,15 @@ const submitFinal = () => {
                             </div>
 
                              <!-- Signature Section -->
-                             <div class="mt-5 pt-4 border-top">
+                             <div v-if="(previewConfig?.show_declaration ?? true) || (previewConfig?.show_signature ?? true) || (previewConfig?.show_thumb_impression ?? true)" class="mt-5 pt-4 border-top">
                                 <div class="row align-items-center">
-                                    <div class="col-md-6 mb-4 mb-md-0">
+                                    <div v-if="(previewConfig?.show_declaration ?? true)" class="col-md-6 mb-4 mb-md-0">
                                         <h6 class="fw-bold small text-uppercase mb-3">Declaration:</h6>
                                         <p class="text-muted small mb-0" style="text-align: justify; line-height: 1.5;">
-                                            I hereby declare that all the information given by me in this application are true and correct to the best of my knowledge and belief. I understand that my candidature is liable to be cancelled if any information is found false.
+                                            {{ previewConfig?.declaration_text || "I hereby declare that all the information given by me in this application are true and correct to the best of my knowledge and belief. I understand that my candidature is liable to be cancelled if any information is found false." }}
                                         </p>
                                     </div>
-                                    <div class="col-md-6 d-flex flex-column align-items-center align-items-md-end">
+                                    <div v-if="(previewConfig?.show_signature ?? true)" class="col-md-6 d-flex flex-column align-items-center align-items-md-end">
                                         <div class="mb-2 text-center p-2 border rounded bg-light" style="width: 200px;">
                                             <img v-if="applicant?.signature_path" :src="`/storage/${applicant.signature_path}`" style="max-height: 60px; max-width: 180px;" />
                                             <div v-else class="py-4 text-muted small">No Signature Found</div>

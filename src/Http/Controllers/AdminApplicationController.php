@@ -109,6 +109,18 @@ class AdminApplicationController extends Controller
             'responses' => $responses,
             // Fallback to CustomEntityValue if Subject model is missing
             'subjects' => CustomEntityValue::orderBy('label')->get(['id', 'label as name', 'value as code']),
+            'previewConfig' => array_merge([
+                'show_photo' => true,
+                'show_signature' => true,
+                'show_thumb_impression' => true,
+                'show_declaration' => true,
+                'show_application_no' => true,
+                'show_subject' => true,
+                'show_program' => true,
+                'show_status' => true,
+                'show_fees' => true,
+                'show_category' => true,
+            ], (array)($application->opening->job->preview_config ?: ($template->preview_config ?: [])))
         ]);
     }
 
