@@ -508,7 +508,7 @@ const isFile = (val) => val instanceof File;
             <div class="col-md-9 col-lg-8">
 
                 <!-- Selection of Application Type (Step 0) -->
-                <div v-if="!form.program_application_type_id && applicationTypes && applicationTypes.length > 0" class="card shadow-sm border-0 mb-4">
+                <div v-if="opening.job.is_payable && !form.program_application_type_id && applicationTypes && applicationTypes.length > 0" class="card shadow-sm border-0 mb-4">
                     <div class="card-header bg-white p-4 text-center border-bottom">
                         <i class="bi bi-person-badge text-primary display-5 mb-2 d-block"></i>
                         <h5 class="fw-bold mb-1 text-dark">Select Application Category</h5>
@@ -571,7 +571,7 @@ const isFile = (val) => val instanceof File;
                     </div>
                  </div>
 
-                 <div v-else-if="form.program_application_type_id" class="card shadow-sm border-0">
+                 <div v-else-if="form.program_application_type_id || !opening.job.is_payable" class="card shadow-sm border-0">
                     <!-- Progress Bar Header -->
                     <div class="card-header bg-white border-bottom p-4">
                         <h5 class="mb-3 text-center fw-bold text-dark">{{ template.name }}</h5>

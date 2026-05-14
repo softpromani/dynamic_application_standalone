@@ -138,8 +138,8 @@ class ApplicantApplicationController extends Controller
             $typeId = $request->input('program_application_type_id');
             $type = ProgramApplicationType::where('program_id', $opening->program_id)->find($typeId);
             
-            $fee = $type ? $type->fee : 0;
-            $fine = ($type && now() > $opening->job->application_end_date) ? ($type->fine_amount ?? 0) : 0;
+            $fee = ($type && $opening->job->is_payable) ? $type->fee : 0;
+            $fine = ($type && $opening->job->is_payable && now() > $opening->job->application_end_date) ? ($type->fine_amount ?? 0) : 0;
 
             $application = Application::create([
                 'application_no' => $this->generateApplicationNo($opening),
@@ -159,8 +159,8 @@ class ApplicantApplicationController extends Controller
             $typeId = $request->input('program_application_type_id');
             $type = ProgramApplicationType::where('program_id', $opening->program_id)->find($typeId);
             if ($type) {
-                $fee = $type->fee;
-                $fine = (now() > $opening->job->application_end_date) ? ($type->fine_amount ?? 0) : 0;
+                $fee = $opening->job->is_payable ? $type->fee : 0;
+                $fine = ($opening->job->is_payable && now() > $opening->job->application_end_date) ? ($type->fine_amount ?? 0) : 0;
                 $application->update([
                     'program_application_type_id' => $typeId,
                     'fee_amount' => $fee,
@@ -276,9 +276,9 @@ class ApplicantApplicationController extends Controller
         $typeId = $application ? $application->program_application_type_id : $request->input('program_application_type_id');
         $type = ProgramApplicationType::where('program_id', $opening->program_id)->find($typeId);
         
-        $fee = $type ? $type->fee : 0;
+        $fee = ($type && $opening->job->is_payable) ? $type->fee : 0;
         $tax = ($fee * ($opening->job->tax_percentage ?? 0)) / 100;
-        $fine = ($type && now() > $opening->job->application_end_date) ? ($type->fine_amount ?? 0) : 0;
+        $fine = ($type && $opening->job->is_payable && now() > $opening->job->application_end_date) ? ($type->fine_amount ?? 0) : 0;
         $total = $fee + $tax + $fine;
 
         if (!$application) {

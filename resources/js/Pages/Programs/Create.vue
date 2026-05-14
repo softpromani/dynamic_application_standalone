@@ -163,33 +163,39 @@ const submit = () => {
                                 </div>
                             </div>
 
-                            <hr class="my-4 opacity-25" />
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h6 class="fw-bold text-muted small text-uppercase mb-0">Application Types & Fees</h6>
-                                <button type="button" @click="addType" class="btn btn-xs btn-outline-primary shadow-sm rounded-pill px-3">
-                                    <i class="bi bi-plus-lg me-1"></i>Add Category
-                                </button>
-                            </div>
-
-                            <div v-for="(type, idx) in form.application_types" :key="idx" class="row g-2 mb-3 align-items-end p-2 border rounded-3 bg-light position-relative">
-                                <div class="col-md-5">
-                                    <TextInput v-model="type.name" label="Category / Type Name" placeholder="e.g. General, PH, SC/ST..." 
-                                        :error="form.errors[`application_types.${idx}.name`]" required />
-                                </div>
-                                <div class="col-md-3">
-                                    <TextInput v-model="type.fee" type="number" step="0.01" label="Fee (₹)" 
-                                        :error="form.errors[`application_types.${idx}.fee`]" required />
-                                </div>
-                                <div class="col-md-3">
-                                    <TextInput v-model="type.fine_amount" type="number" step="0.01" label="Fine (₹)" 
-                                        :error="form.errors[`application_types.${idx}.fine_amount`]" />
-                                </div>
-                                <div class="col-md-1">
-                                    <button type="button" @click="removeType(idx)" class="btn btn-outline-danger btn-sm mb-2 border-0" 
-                                        :disabled="form.application_types.length === 1">
-                                        <i class="bi bi-trash"></i>
+                            <div v-if="form.is_payable">
+                                <hr class="my-4 opacity-25" />
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="fw-bold text-muted small text-uppercase mb-0">Application Types & Fees</h6>
+                                    <button type="button" @click="addType" class="btn btn-xs btn-outline-primary shadow-sm rounded-pill px-3">
+                                        <i class="bi bi-plus-lg me-1"></i>Add Category
                                     </button>
                                 </div>
+
+                                <div v-for="(type, idx) in form.application_types" :key="idx" class="row g-2 mb-3 align-items-end p-2 border rounded-3 bg-light position-relative">
+                                    <div class="col-md-5">
+                                        <TextInput v-model="type.name" label="Category / Type Name" placeholder="e.g. General, PH, SC/ST..." 
+                                            :error="form.errors[`application_types.${idx}.name`]" required />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <TextInput v-model="type.fee" type="number" step="0.01" label="Fee (₹)" 
+                                            :error="form.errors[`application_types.${idx}.fee`]" required />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <TextInput v-model="type.fine_amount" type="number" step="0.01" label="Fine (₹)" 
+                                            :error="form.errors[`application_types.${idx}.fine_amount`]" />
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" @click="removeType(idx)" class="btn btn-outline-danger btn-sm mb-2 border-0" 
+                                            :disabled="form.application_types.length === 1">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else class="alert alert-info py-2 small mt-4 mb-0">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Direct Application Enabled:</strong> Applicants will not be asked for category selection or fees for this program.
                             </div>
 
                             <div class="row mt-3">
