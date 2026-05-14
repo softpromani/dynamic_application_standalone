@@ -64,6 +64,8 @@ Route::prefix('applicant')->name('applicant.')->group(function () {
     Route::post('/logout', [ApplicantAuthController::class, 'logout'])->name('logout');
 
     Route::middleware([
+        'web',
+        \Softpro\Core\Http\Middleware\SetStandaloneRootView::class,
         'auth:applicant', 
         \App\Http\Middleware\EnsureProfileIsComplete::class
     ])->group(function () {
