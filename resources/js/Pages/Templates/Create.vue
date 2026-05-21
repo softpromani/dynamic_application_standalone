@@ -737,9 +737,6 @@ const needsOptions = (type) => ['select', 'radio'].includes(type);
                             <div class="review-item"><span class="review-key">Name</span><span class="review-val">{{ meta.name }}</span></div>
                             <div class="review-item"><span class="review-key">Print: Photo</span><span class="review-val">{{ meta.preview_config.show_photo ? 'Yes' : 'No' }}</span></div>
                             <div class="review-item"><span class="review-key">Print: Signature</span><span class="review-val">{{ meta.preview_config.show_signature ? 'Yes' : 'No' }}</span></div>
-                        </div>
-                    </div>
-
                             <div class="review-item" v-if="meta.description">
                                 <span class="review-key">Description</span>
                                 <span class="review-val">{{ meta.description }}</span>

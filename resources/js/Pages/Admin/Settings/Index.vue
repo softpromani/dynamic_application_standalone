@@ -8,14 +8,14 @@ const props = defineProps({
 });
 
 const form = useForm({
-    name: props.tenant.name || '',
-    landing_page_html: props.tenant.landing_page_html || '',
-    header_address: props.tenant.header_address || '',
-    header_subtext_prefix: props.tenant.header_subtext_prefix || 'APPLICATION FORM FOR',
+    name: props.tenant?.name || '',
+    landing_page_html: props.tenant?.landing_page_html || '',
+    header_address: props.tenant?.header_address || '',
+    header_subtext_prefix: props.tenant?.header_subtext_prefix || 'APPLICATION FORM FOR',
     logo: null,
 });
 
-const logoPreview = ref(props.tenant.logo_path ? `/storage/${props.tenant.logo_path}` : null);
+const logoPreview = ref(props.tenant?.logo_path ? `/storage/${props.tenant.logo_path}` : null);
 
 const handleLogoChange = (e) => {
     const file = e.target.files[0];

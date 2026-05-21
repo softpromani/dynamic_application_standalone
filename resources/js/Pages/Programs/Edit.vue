@@ -27,6 +27,8 @@ const form = useForm({
         fee: t.fee,
         fine_amount: t.fine_amount,
     })),
+    openings: (props.program.openings ?? []).map(v => ({
+        id: v.id,
         subject_id: v.subject_id,
         seats: v.seats,
     })),
