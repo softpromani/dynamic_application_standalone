@@ -5,10 +5,11 @@ namespace Softpro\Core\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class Applicant extends Authenticatable
+class Applicant extends Authenticatable implements \Illuminate\Contracts\Auth\MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, \Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 
     protected $fillable = [
         'name',
@@ -44,11 +45,5 @@ class Applicant extends Authenticatable
         'is_profile_complete' => 'boolean',
     ];
 
-    /**
-     * Send the email verification notification.
-     */
-    public function sendEmailVerificationNotification()
-    {
-        // Verification disabled
-    }
+
 }

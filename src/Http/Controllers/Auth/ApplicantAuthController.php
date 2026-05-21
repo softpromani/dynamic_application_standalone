@@ -25,16 +25,18 @@ class ApplicantAuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $applicant = Applicant::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
+        // After creating the applicant, fire the Registered event which will send the verification email
         event(new Registered($applicant));
 
+        // Log the applicant in
         Auth::guard('applicant')->login($applicant);
 
+        // If the applicant's email is not verified, redirect to verification notice
+        if (method_exists($applicant, 'hasVerifiedEmail') && !$applicant->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
+        }
+
+        // Email is verified; proceed to dashboard
         return redirect()->route('applicant.dashboard');
     }
 
@@ -52,6 +54,10 @@ class ApplicantAuthController extends Controller
 
         if (Auth::guard('applicant')->attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
+            $applicant = Auth::guard('applicant')->user();
+            if (method_exists($applicant, 'hasVerifiedEmail') && !$applicant->hasVerifiedEmail()) {
+                return redirect()->route('verification.notice');
+            }
             return redirect()->intended(route('applicant.dashboard'));
         }
 
