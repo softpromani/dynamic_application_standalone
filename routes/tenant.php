@@ -49,14 +49,24 @@ if (config('softpro-core.enable_root_route', true)) {
         ]);
     })->name('softpro.welcome');
 
-    Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
-        $request->fulfill();
+    Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Http\Request $request, $id, $hash) {
+        $applicant = \Softpro\Core\Models\Applicant::findOrFail($id);
+
+        if (! hash_equals((string) $hash, sha1($applicant->getEmailForVerification()))) {
+            abort(403, 'Invalid verification link.');
+        }
+
+        if (! $applicant->hasVerifiedEmail()) {
+            $applicant->markEmailAsVerified();
+            event(new \Illuminate\Auth\Events\Verified($applicant));
+        }
+
         // Log the applicant in after successful verification using the applicant guard
-        \Illuminate\Support\Facades\Auth::guard('applicant')->login($request->user());
+        \Illuminate\Support\Facades\Auth::guard('applicant')->login($applicant);
         // Ensure subsequent requests use the applicant guard
         \Illuminate\Support\Facades\Auth::shouldUse('applicant');
         return redirect()
-            ->intended('/dashboard')
+            ->intended(route('applicant.dashboard'))
             ->with('status', 'Your email has been verified.');
     })
     ->middleware(['signed'])
