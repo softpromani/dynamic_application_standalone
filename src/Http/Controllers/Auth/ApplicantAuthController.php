@@ -25,15 +25,22 @@ class ApplicantAuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
+        // Create the applicant
+        $applicant = Applicant::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
         // After creating the applicant, fire the Registered event which will send the verification email
         event(new Registered($applicant));
 
         // Log the applicant in
         Auth::guard('applicant')->login($applicant);
 
-        // If the applicant's email is not verified, redirect to verification notice
+        // If the applicant's email is not verified, redirect to verification notice with status flash
         if (method_exists($applicant, 'hasVerifiedEmail') && !$applicant->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice');
+            return redirect()->route('verification.notice')->with('status', 'Verification link sent to your email address.');
         }
 
         // Email is verified; proceed to dashboard
