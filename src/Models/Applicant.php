@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-
-class Applicant extends Authenticatable implements \Illuminate\Contracts\Auth\MustVerifyEmail
+use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
+class Applicant extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, \Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
+    use HasFactory, Notifiable, MustVerifyEmailTrait;
 
     protected $fillable = [
         'name',

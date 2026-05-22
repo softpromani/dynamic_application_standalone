@@ -48,6 +48,19 @@ if (config('softpro-core.enable_root_route', true)) {
             'news' => $news,
         ]);
     })->name('softpro.welcome');
+
+    Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+        $request->fulfill();
+        // Log the applicant in after successful verification using the applicant guard
+        \Illuminate\Support\Facades\Auth::guard('applicant')->login($request->user());
+        // Ensure subsequent requests use the applicant guard
+        \Illuminate\Support\Facades\Auth::shouldUse('applicant');
+        return redirect()
+            ->intended('/dashboard')
+            ->with('status', 'Your email has been verified.');
+    })
+    ->middleware(['signed'])
+    ->name('verification.verify');
 }
 
 // Admin Auth

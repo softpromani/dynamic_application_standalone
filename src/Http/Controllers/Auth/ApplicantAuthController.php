@@ -35,12 +35,14 @@ class ApplicantAuthController extends Controller
         // After creating the applicant, fire the Registered event which will send the verification email
         event(new Registered($applicant));
 
-        // Log the applicant in
+        // Log the applicant in using the applicant guard
         Auth::guard('applicant')->login($applicant);
-
+        // Ensure subsequent requests use the applicant guard
+        Auth::shouldUse('applicant');
         // If the applicant's email is not verified, redirect to verification notice with status flash
         if (method_exists($applicant, 'hasVerifiedEmail') && !$applicant->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice')->with('status', 'Verification link sent to your email address.');
+            return redirect()->route('verification.notice')
+                ->with('status', 'Verification link sent to your email address.');
         }
 
         // Email is verified; proceed to dashboard
@@ -60,12 +62,15 @@ class ApplicantAuthController extends Controller
         ]);
 
         if (Auth::guard('applicant')->attempt($credentials, $request->remember)) {
+            // Ensure the applicant guard is used for subsequent requests
+            Auth::shouldUse('applicant');
             $request->session()->regenerate();
             $applicant = Auth::guard('applicant')->user();
             if (method_exists($applicant, 'hasVerifiedEmail') && !$applicant->hasVerifiedEmail()) {
-                return redirect()->route('verification.notice');
+                return redirect()->route('verification.notice')
+                    ->with('status', 'Please verify your email address.');
             }
-            return redirect()->intended(route('applicant.dashboard'));
+            return redirect()->route('applicant.dashboard');
         }
 
         return back()->withErrors([
