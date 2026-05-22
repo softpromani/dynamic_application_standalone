@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 use Softpro\Core\Http\Controllers\Auth\AdminAuthController;
 use Softpro\Core\Http\Controllers\NewsController;
 use Softpro\Core\Http\Controllers\ProgramController;
@@ -71,6 +72,17 @@ if (config('softpro-core.enable_root_route', true)) {
     })
     ->middleware(['signed'])
     ->name('verification.verify');
+
+    // Verification notice route
+    Route::get('/email/verify-notice', function () {
+        return Inertia::render('Auth/VerifyEmail');
+    })->name('verification.notice');
+
+    // Resend verification email
+    Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('status', 'verification-link-sent');
+    })->middleware(['throttle:6,1'])->name('verification.send');
 }
 
 // Admin Auth
