@@ -66,7 +66,8 @@ Route::prefix('applicant')->name('applicant.')->group(function () {
     Route::middleware([
         'web',
         \Softpro\Core\Http\Middleware\SetStandaloneRootView::class,
-        'auth:applicant', 
+        'auth:applicant',
+        'verified',
         \App\Http\Middleware\EnsureProfileIsComplete::class
     ])->group(function () {
         Route::get('/dashboard', [ApplicantProfileController::class, 'dashboard'])->name('dashboard');
